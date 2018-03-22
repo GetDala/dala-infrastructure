@@ -1,0 +1,13 @@
+{
+  "name": "dala-stack",
+  "version": "1.0.0",
+  "description": "dala cloudformation stack",
+  "main": "index.js",
+  "scripts": {
+  },
+  "author": "jmaleonard",
+  "license": "ISC",
+  "dependencies": {
+    "cfn-create-or-update": "^1.2.0"
+  }
+}

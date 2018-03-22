@@ -1,0 +1,8 @@
+## Dala Stack
+
+#MORE COMING SOON
+
+
+## TO CONNECT TO YOUR DOCKER CONTAINERS
+
+docker exec -i -t <COINTAINERID> sh

@@ -1,0 +1,62 @@
+echo "Deploying Dala-Fineract Stack"
+if [ -z ${1} ]; then
+	echo "aws-profile is not set, please enter aws-profile name"
+	read -p 'awsprofile:' awsprofile
+else
+	awsprofile="${1}"
+fi
+if [ -z ${2} ]; then
+	echo "stack-name is not set, please enter stack-name name"
+	read -p 'stackname:' stackname
+else
+	stackname="${2}"
+fi
+
+if [ -z ${3} ]; then
+	echo "region is not set, please enter region"
+	read -p 'region:' region
+else
+	region="${3}"
+fi
+if [ -z ${4} ]; then
+	echo "fineract Database Username is not set, please enter fineract Database Username"
+	read -p 'fineractDatabaseUsername:' fineractDatabaseUsername
+else
+	fineractDatabaseUsername="${4}"
+fi
+
+if [ -z ${5} ]; then
+	echo "fineract Database Password is not set, please enter fineract Database Password"
+	read -p 'fineractDatabasePassword:' fineractDatabasePassword
+else
+	fineractDatabasePassword="${5}"
+fi
+
+if [ -z ${6} ]; then
+	echo "Dala Infrastructure Stack Name is not set, please enter Dala Infrastructure Stack Name "
+	read -p 'DalaInfrastructureStackName:' DalaInfrastructureStackName
+else
+	DalaInfrastructureStackName="${6}"
+fi
+
+echo "aws-profile is set to :" $awsprofile
+echo "stack-name is set to :" $stackname
+echo "region is set to :" $region
+echo "fineract Database Username is set to :" $fineractDatabaseUsername
+echo "fineractDatabasePassword is set to :" $fineractDatabasePassword
+echo "DalaInfrastructureStackName is set to :" $DalaInfrastructureStackName
+
+node_modules/cfn-create-or-update/cli.js --profile "${awsprofile}" --region "${region}" create-stack --stack-name "${stackname}" --template-body file://CloudFormation/fineract-storage-stack.yml \
+	--parameters ParameterKey=StackRegion,ParameterValue="${region}" \
+	ParameterKey=FineractDatabaseUsername,ParameterValue="${fineractDatabaseUsername}" \
+	ParameterKey=FineractDatabasePassword,ParameterValue="${fineractDatabasePassword}" \
+	ParameterKey=DalaInfrastructureStackName,ParameterValue="${DalaInfrastructureStackName}" \
+	--capabilities CAPABILITY_IAM \
+	--wait
+
+RESULT=$?
+if [ $RESULT -eq 0 ]; then
+	echo "\n\n Stack: ${stackname} has been deployed \n\n"
+else
+	echo "\n\n Stack: ${stackname} did not successfully deploy"
+fi
