@@ -20,6 +20,9 @@ Parameters:
   RPCPROVIDER:
     Type: String
     Description: The RPC server address 
+  ChannelManagerAddress:
+    Type: String
+    Description: The microraiden channel manager address
    
 Resources:
   MicroRaidenNLBSecurityGroup:
@@ -213,7 +216,7 @@ Resources:
                   LOGIN=$(aws ecr get-login --region ${AWS::Region})
                   ${!LOGIN}
                   docker pull ${AWS::AccountId}.dkr.ecr.eu-west-1.amazonaws.com/dala-microraiden:${StackStage}
-                  /usr/bin/screen -m -d -S docker docker run -e LC_ALL=C.UTF-8 -e LANG=C.UTF-8 -e AWS_DEFAULT_REGION=${AWS::Region} -e ENVIRONMENT=${Environment} -e RPC_PROVIDER="${RPCPROVIDER}" -p 8545:8545 -p 80:80 -p 443:443 -p 5000:5000 --log-driver=awslogs --log-opt awslogs-group=micro-raiden-logs  ${AWS::AccountId}.dkr.ecr.eu-west-1.amazonaws.com/dala-microraiden:${StackStage}
+                  /usr/bin/screen -m -d -S docker docker run -e LC_ALL=C.UTF-8 -e LANG=C.UTF-8 -e AWS_DEFAULT_REGION=${AWS::Region} -e ENVIRONMENT=${Environment} -e RPC_PROVIDER="${RPCPROVIDER}" -e CHANNEL_MANAGER_ADDRESS="${ChannelManagerAddress}" -p 8545:8545 -p 80:80 -p 443:443 -p 5000:5000 --log-driver=awslogs --log-opt awslogs-group=micro-raiden-logs  ${AWS::AccountId}.dkr.ecr.eu-west-1.amazonaws.com/dala-microraiden:${StackStage}
 
 Outputs:
   MircoRaidenNLBHostName:

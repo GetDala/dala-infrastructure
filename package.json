@@ -1,7 +1,7 @@
 {
-  "name": "dala-stack",
+  "name": "dala-microraiden-stack",
   "version": "1.0.0",
-  "description": "dala cloudformation stack",
+  "description": "micro riaden cloud formation",
   "main": "index.js",
   "scripts": {
   },

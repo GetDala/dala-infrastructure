@@ -49,6 +49,12 @@ else
 	RPCPROVIDER="${8}"
 fi
 
+if [ -z ${9} ]; then
+	echo "ChannelManagerAddress is not set, please enter ChannelManagerAddress"
+	read -p 'ChannelManagerAddress:' ChannelManagerAddress
+else
+	ChannelManagerAddress="${9}"
+fi
 
 echo "aws-profile is set to :" $awsprofile
 echo "stack-name is set to :" $stackname
@@ -62,6 +68,7 @@ node_modules/cfn-create-or-update/cli.js --profile "${awsprofile}" --region "${r
 	ParameterKey=Environment,ParameterValue="${Environment}" \
 	ParameterKey=StackStage,ParameterValue="${StackStage}" \
 	ParameterKey=RPCPROVIDER,ParameterValue="${RPCPROVIDER}" \
+	ParameterKey=ChannelManagerAddress,ParameterValue="${ChannelManagerAddress}" \
 	--capabilities CAPABILITY_IAM \
 	--wait
 

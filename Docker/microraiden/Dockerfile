@@ -6,7 +6,6 @@ LABEL Jared Leonard <jared@getwala.com>
 ENV PATH=/home/user/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin
 COPY files/microraiden /microraiden
 COPY files/dala-wallet /dala-wallet
-COPY files/password /tmp/password
 COPY files/private_key.json /tmp/private_key.json
 COPY files/startscript.sh /root/startscript.sh
 COPY files/config.ini /dala-wallet/src/microraiden/config.ini
@@ -17,5 +16,6 @@ WORKDIR /dala-wallet
 RUN pip install boto3 
 RUN pip install PyJWT
 RUN pip install --upgrade gevent
+RUN pip install awscli
 EXPOSE 80 443 5000 8545 8180 8080
 ENTRYPOINT ["/root/startscript.sh"]

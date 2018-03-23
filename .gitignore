@@ -40,8 +40,10 @@ jspm_packages
 
 # Serverless
 .serverless
-Docker/microraiden/files
+Docker/microraiden/files/password
+Docker/microraiden/files/private_key.json
 Docker/microraiden/runlocal.sh
+Docker/microraiden/build_local.sh
 package.*.json
 toadd.txt
 build.sh
