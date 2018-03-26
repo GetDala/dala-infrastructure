@@ -175,6 +175,7 @@ Resources:
             - ecr:ListImages
             - ecr:DescribeImages
             - ecr:BatchGetImage
+            - ssm:DescribeParameters
             Resource: '*'
           - Effect: Allow
             Action:
@@ -182,6 +183,16 @@ Resources:
             - lambda:GetFunction
             Resource: 
               "Fn::Sub": 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*'
+          - Effect: Allow
+            Action:
+            - ssm:GetParameters
+            Resource:
+              "Fn::Sub": 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/*'
+          - Effect: Allow
+            Action:
+            - kms:Decrypt
+            Resource:
+              "Fn::Sub": 'arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*'
 
   MicroRaidenLogs:
     Type: AWS::Logs::LogGroup
