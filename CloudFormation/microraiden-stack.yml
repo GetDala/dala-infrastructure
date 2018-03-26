@@ -185,7 +185,7 @@ Resources:
               "Fn::Sub": 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*'
           - Effect: Allow
             Action:
-            - ssm:GetParameters
+            - ssm:GetParameter
             Resource:
               "Fn::Sub": 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/*'
           - Effect: Allow
