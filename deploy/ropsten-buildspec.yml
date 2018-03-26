@@ -20,6 +20,9 @@ phases:
       - echo Building the Docker image... 
       - cd Docker/microraiden
       - git clone https://github.com/raiden-network/microraiden.git files/microraiden
+      - cd files/microraiden 
+      - latestTag=$(git describe --tags `git rev-list --tags --max-count=1`) && git checkout $latestTag
+      - cd $CODEBUILD_SRC_DIR/Docker/microraiden
       - git clone https://github.com/GetDala/dala-wallet.git files/dala-wallet
       - aws s3 cp s3://$ETH_WALLET_PATH files/private_key.json
       - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
