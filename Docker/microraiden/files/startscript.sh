@@ -1,6 +1,6 @@
 #!/bin/sh
 [ -e /tmp/password ] && rm /tmp/password
-PASSWORD=$(aws ssm get-parameter --name '/dala-wallet-api/ropsten/MICRORAIDEN_RECEIVER_PASSWORD' --with-decryption  --region $AWS_DEFAULT_REGION --query "Parameter.Value" --output text)
+PASSWORD=$(aws ssm get-parameter --name "/dala-wallet-api/$STACK_STAGE/MICRORAIDEN_RECEIVER_PASSWORD" --with-decryption  --region $AWS_DEFAULT_REGION --query "Parameter.Value" --output text)
 echo -n $PASSWORD > /tmp/password
 chmod 400 /tmp/password
 chmod 400 /tmp/private_key.json

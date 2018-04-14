@@ -175,9 +175,11 @@ Resources:
                       cd dala-wallet 
                       npm install 
                       echo "#!/bin/bash
+                      export INSTANCE_ID=`curl http://169.254.169.254/latest/meta-data/instance-id`
                       export RPC_SERVER=${RPCSERVER}
                       export TOKEN_ADDRESS=${TOKENADDRESS}
-                      /usr/bin/forever start --uid dalaTokenListener --sourceDir /dala-wallet/src/blockchain -l /dala-wallet/tokenlistners.logs -e /dala-wallet/tokenlistners.logs --append --minUptime 5000 --spinSleepTime 2000 -m 5 token-listener.js" > startListner.sh 
+                      export AWS_REGION=${AWS::Region}
+                      /usr/bin/forever start --uid dalaTokenListener --sourceDir /dala-wallet/src/blockchain -l /dala-wallet/tokenlistners.logs -e /dala-wallet/tokenlistners.logs --append --minUptime 5000 --spinSleepTime 2000 -m 100 token-listener.js" > startListner.sh 
                       chmod +x startListner.sh
                       sh startListner.sh
                       /usr/local/bin/cfn-signal -e 0 --region ${AWS::Region} --stack ${AWS::StackName} --resource TokenListenerServerGroup
