@@ -43,7 +43,7 @@ Parameters:
             - m2.2xlarge
             - m2.4xlarge
             - m3.medium
-            - m3.large
+            - m5.large
             - m3.xlarge
             - m3.2xlarge
             - c1.medium
@@ -116,7 +116,7 @@ Mappings:
             Arch: '64'
         m3.medium:
             Arch: '64'
-        m3.large:
+        m5.large:
             Arch: '64'
         m3.xlarge:
             Arch: '64'
@@ -288,6 +288,30 @@ Resources:
                     Key: Name
                     Value: geth-node
                     PropagateAtLaunch: true
+
+    ParityAutoScalingGroup:
+        Type: 'AWS::AutoScaling::AutoScalingGroup'
+        Properties:
+            VPCZoneIdentifier:
+                - 'Fn::ImportValue': 
+                    'Fn::Sub': "${DalaInfrastructureStackName}-PrivateSubnetAId"
+                - 'Fn::ImportValue': 
+                    'Fn::Sub': "${DalaInfrastructureStackName}-PrivateSubnetBId"
+                - 'Fn::ImportValue': 
+                    'Fn::Sub': "${DalaInfrastructureStackName}-PrivateSubnetCId"
+            MinSize:
+                Ref: InstanceCount
+            MaxSize:
+                Ref: InstanceCount
+            LoadBalancerNames:
+                - Ref: GethLoadBalancer
+            LaunchConfigurationName:
+                Ref: ParityLaunchConfiguration
+            Tags:
+                -   
+                    Key: Name
+                    Value: parity-node
+                    PropagateAtLaunch: true                    
     
     LaunchConfiguration:
         Type: 'AWS::AutoScaling::LaunchConfiguration'
@@ -323,6 +347,38 @@ Resources:
                                 mkdir /ethereum
                                 docker pull ${DockerImage}
                                 /usr/bin/screen -m -d -S docker docker run -e WS_SECRET='"${ETHStatsPassword}"' -e WS_SERVER='http://${EthStatsPrivateIp}:3000' -e INSTANCE_NAME=`curl http://169.254.169.254/latest/meta-data/instance-id` -it -p 8545:8545 -p 30303:30303 -v /ethereum:/root/.ethereum ${DockerImage}
+                        - EthStatsPrivateIp:
+                            'Fn::GetAtt': 
+                              - EthstatsInstance
+                              - PrivateIp
+
+    ParityLaunchConfiguration:
+        Type: 'AWS::AutoScaling::LaunchConfiguration'
+        Properties:
+            ImageId: ami-6d48500b
+            InstanceType:
+                Ref: InstanceType
+            BlockDeviceMappings:
+                - 
+                    DeviceName: /dev/sda1
+                    Ebs:
+                        VolumeSize: '500'
+                        VolumeType: gp2
+            KeyName:
+                Ref: KeyName
+            SecurityGroups:
+                - Ref: ETHRPCSecurity
+            AssociatePublicIpAddress: false
+            UserData:
+                'Fn::Base64':
+                      "Fn::Sub": 
+                        - |
+                            #!/bin/bash -xe
+                                apt update -y
+                                apt install -y docker.io screen
+                                mkdir /ethereum
+                                docker pull dalaorg/docker-geth-parity:latest
+                                /usr/bin/screen -m -d -S docker docker run -e WS_SECRET='"${ETHStatsPassword}"' -e WS_SERVER='http://${EthStatsPrivateIp}:3000' -e INSTANCE_NAME=`curl http://169.254.169.254/latest/meta-data/instance-id && echo "_parity_node"` -it -p 8545:8545 -p 30303:30303 -v /ethereum:/root/.ethereum dalaorg/docker-geth-parity:latest
                         - EthStatsPrivateIp:
                             'Fn::GetAtt': 
                               - EthstatsInstance
