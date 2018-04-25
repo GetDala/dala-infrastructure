@@ -422,6 +422,7 @@ Resources:
                           apt install -y docker.io screen
                           docker pull myetherwallet/docker-geth-lb:ethstats-instance
                           /usr/bin/screen -m -d -S docker docker run -it -e WS_SECRET='"${ETHStatsPassword}"' -p 3000:3000 myetherwallet/docker-geth-lb:ethstats-instance
+
     ETHStatsSecurity:
         Type: 'AWS::EC2::SecurityGroup'
         Properties:
@@ -431,6 +432,11 @@ Resources:
                     IpProtocol: tcp
                     FromPort: '3000'
                     ToPort: '3000'
+                    CidrIp: 0.0.0.0/0
+                - 
+                    IpProtocol: tcp
+                    FromPort: '8000'
+                    ToPort: '8000'
                     CidrIp: 0.0.0.0/0
                 - 
                     IpProtocol: tcp
