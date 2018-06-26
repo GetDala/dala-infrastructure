@@ -35,17 +35,30 @@ Resources:
         Ref: RDSDBClusterParameterGroup
       VpcSecurityGroupIds:
         - "Fn::GetAtt": FineractStorageSecurityGroup.GroupId
-  DBInstance:
+  DBInstanceXLLarge:
     Type: 'AWS::RDS::DBInstance'
     DependsOn: FineractStorageSecurityGroup
     Properties:
-      DBInstanceClass: db.t2.small
+      DBInstanceClass: db.r4.xlarge
       Engine: aurora
       PubliclyAccessible: false
       DBClusterIdentifier:
         Ref: DBCluster
       AvailabilityZone:
-          Fn::Sub: "${StackRegion}a"
+          Fn::Sub: "${StackRegion}b"
+
+  DBInstanceXLLargeReplica:
+    Type: 'AWS::RDS::DBInstance'
+    DependsOn: FineractStorageSecurityGroup
+    Properties:
+      DBInstanceClass: db.r4.large
+      Engine: aurora
+      PubliclyAccessible: false
+      DBClusterIdentifier:
+        Ref: DBCluster
+      AvailabilityZone:
+          Fn::Sub: "${StackRegion}b"
+
   RDSDBClusterParameterGroup:
     Type: 'AWS::RDS::DBClusterParameterGroup'
     Properties:

@@ -41,10 +41,17 @@ else
 fi
 
 if [ -z ${7} ]; then
-	echo "RPCSERVER is not set, please enter RPCSERVER"
-	read -p 'RPCSERVER:' RPCSERVER
+	echo "RPCSERVER_INFURA is not set, please enter RPCSERVER_INFURA"
+	read -p 'RPCSERVER_INFURA:' RPCSERVER_INFURA
 else
-	RPCSERVER="${7}"
+	RPCSERVER_INFURA="${7}"
+fi
+
+if [ -z ${8} ]; then
+	echo "RPCSERVER_PARITY is not set, please enter RPCSERVER_PARITY"
+	read -p 'RPCSERVER_PARITY:' RPCSERVER_PARITY
+else
+	RPCSERVER_PARITY="${8}"
 fi
 
 echo "aws-profile is set to :" $awsprofile
@@ -56,7 +63,8 @@ node_modules/cfn-create-or-update/cli.js --profile "${awsprofile}" --region "${r
 	--parameters ParameterKey=KeyPair,ParameterValue="${keypair}" \
 	ParameterKey=DalaInfrastructureStackName,ParameterValue="${DalaInfrastructureStackName}" \
     ParameterKey=TOKENADDRESS,ParameterValue="${TOKEN_ADDRESS}" \
-    ParameterKey=RPCSERVER,ParameterValue="${RPCSERVER}" \
+    ParameterKey=RPCSERVERINFURA,ParameterValue="${RPCSERVER_INFURA}" \
+	ParameterKey=RPCSERVERPARITY,ParameterValue="${RPCSERVER_PARITY}" \
 	--capabilities CAPABILITY_IAM \
 	--wait
 

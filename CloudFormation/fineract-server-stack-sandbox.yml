@@ -23,12 +23,6 @@ Parameters:
   SSLCertificateARN:
     Type: String
     Description: SSL certificate arn for the fineract stack
-  FineractAPIUsername:
-    Type: String
-    Description: Fineract API UserName
-  FineractAPIPassword:
-    Type: String
-    Description: Fineract API Password
 
 Resources:
   FineractElbSecurityGroup:
@@ -104,12 +98,9 @@ Resources:
       LaunchConfigurationName:
          Ref: FineractLaunchConfig
       MinSize: '2'
-      MaxSize: '4'
-      DesiredCapacity: '3'
+      MaxSize: '2'
       LoadBalancerNames:
         - Ref: FineractELB
-      HealthCheckType: ELB
-      HealthCheckGracePeriod: 120
       Tags:
         - Key: Name
           Value: fineract-web-server
@@ -123,7 +114,7 @@ Resources:
       IamInstanceProfile:
         'Fn::ImportValue':
           'Fn::Sub': "${DalaInfrastructureStackName}-DalaInstanceRoleArn"
-      InstanceType: m5.large
+      InstanceType: t2.medium
       KeyName:
         Ref: KeyPair
       SecurityGroups:
@@ -186,9 +177,9 @@ Resources:
 
                       [ ! -e /opt/activemq ]  && ln -s /opt/apache-activemq-5.14.3 /opt/activemq
                       /opt/activemq/bin/activemq start
-                      curl https://s3-eu-west-1.amazonaws.com/wala-fineract-dev/fineract-provider.war --output /usr/share/tomcat7/webapps/fineract-provider.war
+                      curl https://s3-eu-west-1.amazonaws.com/wala-fineract-dev/fineract-provider-sandbox.war --output /usr/share/tomcat7/webapps/fineract-provider.war
                       curl https://s3-eu-west-1.amazonaws.com/wala-fineract-dev/mysql-connector-java-5.1.36-bin.jar --output /usr/share/tomcat7/lib/mysql-connector-java-5.1.36-bin.jar
-                      curl https://s3-eu-west-1.amazonaws.com/wala-fineract-dev/server.xml --output /tmp/server.xml
+                      curl https://s3-eu-west-1.amazonaws.com/wala-fineract-dev/server-sandbox.xml --output /tmp/server.xml
                       [ -e /usr/share/tomcat7/conf/server.xml ] && rm /usr/share/tomcat7/conf/server.xml
                       sed -e 's@%DATABASE_URL%@${DatabaseCluster}:${DatabaseClusterPort}/mifosplatform-tenants@' -e 's@%FINERACT_USERNAME%@${FineractDatabaseUsername}@' -e 's@%FINERACT_PASSWORD%@${FineractDatabasePassword}@' /tmp/server.xml >> /usr/share/tomcat7/conf/server.xml
                       service awslogs start
@@ -203,8 +194,7 @@ Resources:
                       tar -zxvf fineractHealthCheck.tar.gz -C fineractHealthCheck
                       cd fineractHealthCheck/*/
                       npm install
-                      FINERACT_USERNAME=${FineractAPIUsername} FINERACT_PASSWORD=${FineractAPIPassword} forever start index.js
-
+                      FINERACT_USERNAME=mifos FINERACT_PASSWORD=password forever start index.js
                       rm /var/lib/cloud/instances/*/sem/config_scripts_user
                       /opt/aws/bin/cfn-signal -e 0 --region ${AWS::Region} --stack ${AWS::StackName} --resource FineractWebServerGroup
             - LogGroupName:

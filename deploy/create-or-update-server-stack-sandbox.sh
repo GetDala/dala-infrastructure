@@ -60,20 +60,6 @@ else
 	SSLCertificateARN="${9}"
 fi
 
-if [ -z ${10} ]; then
-	echo "FineractAPIUsername is not set, please enter Storage Stack Name "
-	read -p 'FineractAPIUsername:' FineractAPIUsername
-else
-	FineractAPIUsername="${10}"
-fi
-
-if [ -z ${11} ]; then
-	echo "FineractAPIPassword is not set, please enter Storage Stack Name "
-	read -p 'FineractAPIPassword:' FineractAPIPassword
-else
-	FineractAPIPassword="${11}"
-fi
-
 echo "aws-profile is set to :" $awsprofile
 echo "stack-name is set to :" $stackname
 echo "region is set to :" $region
@@ -83,7 +69,7 @@ echo "DalaInfrastructureStackName is set to :" $DalaInfrastructureStackName
 echo "KeyPair is set to: " $KeyPair
 echo "StorageStackName is set to: " $StorageStackName
 
-node_modules/cfn-create-or-update/cli.js --profile "${awsprofile}" --region "${region}" create-stack --stack-name "${stackname}" --template-body file://CloudFormation/fineract-server-stack.yml \
+node_modules/cfn-create-or-update/cli.js --profile "${awsprofile}" --region "${region}" create-stack --stack-name "${stackname}" --template-body file://CloudFormation/fineract-server-stack-sandbox.yml \
 	--parameters ParameterKey=StackRegion,ParameterValue="${region}" \
 	ParameterKey=FineractDatabaseUsername,ParameterValue="${fineractDatabaseUsername}" \
 	ParameterKey=FineractDatabasePassword,ParameterValue="${fineractDatabasePassword}" \
@@ -91,8 +77,6 @@ node_modules/cfn-create-or-update/cli.js --profile "${awsprofile}" --region "${r
     ParameterKey=KeyPair,ParameterValue="${KeyPair}" \
 	ParameterKey=StorageStack,ParameterValue="${StorageStackName}" \
     ParameterKey=SSLCertificateARN,ParameterValue="${SSLCertificateARN}" \
-    ParameterKey=FineractAPIPassword,ParameterValue="${FineractAPIPassword}" \
-    ParameterKey=FineractAPIUsername,ParameterValue="${FineractAPIUsername}" \
 	--capabilities CAPABILITY_IAM \
 	--wait
 
